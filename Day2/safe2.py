@@ -35,13 +35,17 @@ for line in sys.stdin:
     level_removed = 0 # haven't removed a level yet
     prev_level = levels[0]
     direction = sign(levels[1] - prev_level)
+    print_result = False
     # special case: first level
     if direction == 0 or abs(levels[1] - prev_level) > 3:
-        safe = 0
-        level_removed = 1
+        print(levels)
         levels.pop(0)
+        print("\tnew: ", levels)
+        safe = 1
+        level_removed = 1
         prev_level = levels[0]
         direction = sign(levels[1] - prev_level)
+        print_result = True
     for lvl in levels[1:]:
         new_direction = sign(lvl - prev_level)
         if new_direction == 0 or new_direction != direction:
@@ -58,7 +62,8 @@ for line in sys.stdin:
     # END for lvl
     
     safe_count += safe # CONSTRAINT: safe is either 1 or 0
-    # print(safe_count)
+    if print_result:
+        print("\t", safe_count, "this: ", safe, "\n")
 
 # END for line
 
