@@ -38,7 +38,7 @@ def process(line):
         total += int(ints[0]) * int(ints[1])
     return total
 
-def preprocess(line):
+def preprocess(line, enabled):
     # remove everything between 'don't()' and 'do()'
     pattern = r'don\'t\(\)(.*?)do\(\)'
     post = re.sub(pattern, '', line)
@@ -46,7 +46,16 @@ def preprocess(line):
     return post
 
 total = 0
+enabled = True
+pattern = r'(.*?)(don\'t\(\)|do\(\)|$)'
 for line in sys.stdin:
-    total += process(preprocess(line))
+    for part in re.findall(pattern, line):
+        print(part)
+        if enabled:
+            total += process(part[0])
+        if part[1] == 'don\'t()':
+            enabled = False
+        elif part[1] == 'do()':
+            enabled = True
     
 print("Sum of all ENABLED mul instructions is: ", total)
