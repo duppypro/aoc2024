@@ -30,14 +30,22 @@ directions = (
     (-1, 1),  # left-down
 )
 
-# fill a grid from stdin
-grid = []
+# make grid larger than input by word_length on each side
+# CONSTRAINT: Assumes input is no larger than 140x140
+grid_size = 146
+# Initialize a grid of grid_size tuples of grid_size pad_char
+grid = [pad_char * grid_size] * grid_size
+
+# fill the center of it from stdin
+x = word_length - 1
+y = word_length - 1
 for line in sys.stdin:
-    line = line.strip() # strip '\n' from line
-    grid_width = len(line)
-    grid += [line] # strip '\n' from line
+    line = line.strip()
+    grid[y] = grid[y][:x] + line + grid[y][grid_size - x:]
+    y += 1
 
 print(grid)
+y = word_length - 1
 
 def check(grid, start, dir):
     # print(start, dir, start[1]+dir[1], start[0]+dir[0])
@@ -45,8 +53,6 @@ def check(grid, start, dir):
     # print("\t\t", grid[start[1]+dir[1]][start[0]+dir[0]])
     cursor = list(start)
     for i in range(word_length):
-        if cursor[0] < 0 or cursor[1] < 0 or cursor[0] >= grid_width or cursor[1] >= len(grid):
-            return 0
         if grid[cursor[1]][cursor[0]] != search_word[i]:
             return 0
         cursor[0] += dir[0]
@@ -54,8 +60,8 @@ def check(grid, start, dir):
     return 1
 
 total = 0
-for y in range(len(grid)):
-    for x in range(grid_width):
+for y in range(word_length-1, grid_size - (word_length - 1)):
+    for x in range(word_length-1, grid_size - (word_length - 1)):
         print(grid[y])
         print(' ' * x + grid[y][x])
         for dir in range(len(directions)):
